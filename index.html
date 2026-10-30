@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f4eb" />
+  <meta name="description" content="简单又灵活的一周餐食计划：今日吃什么、食堂外卖切换、采购清单。" />
+  <title>好好吃饭 · 一周食谱</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='22' fill='%232e5540'/%3E%3Ccircle cx='40' cy='42' r='23' fill='%23fff4db'/%3E%3Ccircle cx='40' cy='42' r='12' fill='%23f4aa6b'/%3E%3Cpath d='M20 20l9 9M60 20l-9 9' stroke='%23d9e9d6' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <style>
+    :root {--bg:#f6f4eb;--surface:#fffefa;--dark:#244837;--dark2:#173b2d;--muted:#728075;--line:#e8e8df;--accent:#f6d589;--pale:#eaf0df;--orange:#e68b58;--shadow:0 10px 40px rgba(35,63,42,.07);}
+    * {box-sizing:border-box}
+    html { scroll-behavior:smooth; }
+    body {margin:0;background:var(--bg);color:#253a2f;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+    button,input,textarea {font:inherit}
+    button {cursor:pointer;-webkit-tap-highlight-color:transparent}
+    button:focus-visible,input:focus-visible,textarea:focus-visible {outline:3px solid #85ae87;outline-offset:2px}
+    .shell {max-width:1070px;margin:0 auto;padding:25px 24px 112px}
+    .topbar {display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:27px}
+    .logo {display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:-.05em;font-size:19px;color:var(--dark)}
+    .brand-icon {height:35px;width:35px;border-radius:13px;background:var(--dark);color:#ffdf91;display:grid;place-items:center;font-size:21px;transform:rotate(-7deg)}
+    .top-right {display:flex;align-items:center;gap:10px;font-size:12px;color:#66786a}
+    .saved-dot {height:8px;width:8px;border-radius:50%;background:#76a67d;display:inline-block}
+    .hero {background:var(--dark);border-radius:28px;min-height:212px;padding:33px 35px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;color:#f7faf2;box-shadow:var(--shadow)}
+    .hero::before {content:"";height:235px;width:235px;position:absolute;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:38px;top:-120px}
+    .hero::after {content:"";height:330px;width:330px;position:absolute;border:1px solid rgba(255,255,255,.08);border-radius:50%;right:-50px;bottom:-235px}
+    .eyebrow {font-size:12px;letter-spacing:.22em;font-weight:750;color:#f1d6a5;margin:0 0 13px}
+    .hero h1 {margin:0;font-size:clamp(29px,4.5vw,43px);line-height:1.25;letter-spacing:-.04em;font-weight:900;max-width:570px}
+    .hero p {color:#d7e4d8;margin:13px 0 0;font-size:14px;max-width:550px}
+    .hero-art {width:157px;height:157px;border-radius:50%;background:#f4e6c1;position:relative;flex:none;margin-right:37px;z-index:1;box-shadow:0 10px 0 rgba(0,0,0,.08);transform:rotate(-8deg)}
+    .hero-art:before {content:"";position:absolute;inset:18px;border:5px solid #fff9e9;border-radius:50%}
+    .hero-art .a {position:absolute;top:35px;left:33px;font-size:55px}.hero-art .b {position:absolute;bottom:16px;right:24px;font-size:39px}.hero-art .c {position:absolute;left:20px;bottom:20px;font-size:35px}
+    .tabs {display:flex;gap:8px;margin:24px 0 24px;align-items:center}
+    .tab {border:1px solid transparent;border-radius:999px;background:transparent;color:#66796e;padding:11px 21px;font-weight:750}
+    .tab.active {background:var(--dark);color:#fff;box-shadow:0 4px 12px rgba(36,72,55,.15)}
+    .tab:hover:not(.active) {background:#ebeee5}
+    .page {display:none;animation:enter .25s ease}.page.active {display:block}
+    @keyframes enter {from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .section-top {display:flex;justify-content:space-between;align-items:end;gap:14px;margin:0 0 16px}
+    h2 {font-size:24px;margin:0;letter-spacing:-.04em;line-height:1.35}
+    .sub {font-size:13px;color:var(--muted);margin:6px 0 0}
+    .pill {display:inline-flex;border-radius:999px;padding:6px 11px;background:#e8eddb;color:#4b6655;font-size:12px;font-weight:750;white-space:nowrap}
+    .day-strip {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:20px 0 23px}
+    .day-btn {border:1px solid var(--line);background:var(--surface);padding:12px 3px 10px;border-radius:16px;text-align:center;min-width:0;transition:transform .15s,border .15s}
+    .day-btn:hover {transform:translateY(-2px)}
+    .day-btn.active {background:var(--dark);color:white;border-color:var(--dark)}
+    .day-btn .weekday {display:block;font-size:12px;opacity:.78;font-weight:700;letter-spacing:.02em}
+    .day-btn .date {display:block;font-size:20px;font-weight:850;line-height:1.6;font-variant-numeric:tabular-nums}
+    .today-mark {height:4px;width:4px;border-radius:50%;background:var(--orange);display:block;margin:2px auto 0;opacity:0}
+    .day-btn.is-today .today-mark {opacity:1}
+    .section-line {display:flex;align-items:center;gap:9px;margin:22px 0 12px}
+    .section-line h3 {margin:0;font-size:17px;letter-spacing:-.03em}
+    .meal-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .meal-card {background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:21px;min-width:0;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:15px}
+    .meal-top {display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .meal-label {font-size:13px;color:#748276;font-weight:750}
+    .meal-emoji {font-size:24px;background:#f2f1e8;border-radius:13px;width:46px;height:46px;display:grid;place-items:center}
+    .meal-title {font-size:21px;font-weight:850;letter-spacing:-.04em;line-height:1.35;min-height:56px}
+    .meal-extra {font-size:13px;color:#758274;min-height:24px}
+    .modes {background:#f0f1e9;border-radius:13px;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;gap:3px;margin-top:auto}
+    .mode {border:0;border-radius:10px;background:transparent;padding:9px 4px;color:#687768;font-size:12px;font-weight:700;white-space:nowrap}
+    .mode.active {background:var(--surface);color:var(--dark);box-shadow:0 2px 7px rgba(40,75,40,.09)}
+    .meal-actions {display:flex;justify-content:space-between;gap:8px}
+    .quiet-btn {border:1px solid #e4e9df;background:#fffefa;border-radius:11px;padding:8px 11px;font-size:12px;color:#4b6751;font-weight:750;flex:1}
+    .quiet-btn:hover {background:#f1f5ed}
+    .note-card {margin-top:18px;padding:17px 19px;background:#e7eedf;border-radius:18px;display:flex;align-items:start;gap:12px;color:#425f4b}
+    .note-card .spark {font-size:24px;line-height:1.1}.note-card strong {font-size:14px}.note-card p {margin:4px 0 0;color:#647767;font-size:13px}
+    .weekly-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .week-card {text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:19px;padding:17px 18px;box-shadow:0 4px 20px rgba(27,52,38,.025);transition:border .15s, transform .15s}
+    .week-card:hover {border-color:#9daf9b;transform:translateY(-2px)}
+    .week-card.current {border-color:#799f7c;box-shadow:0 0 0 2px #e1eadb inset}
+    .week-top {display:flex;justify-content:space-between;gap:6px;align-items:center;margin-bottom:11px}
+    .week-title {font-size:17px;font-weight:850}.week-current {font-size:10px;color:#4a7d5a;background:#e8f2e2;border-radius:999px;padding:3px 8px;font-weight:750}
+    .week-meal {display:flex;gap:8px;align-items:baseline;margin:6px 0;font-size:13px;min-width:0}
+    .week-meal small {font-size:11px;color:var(--muted);min-width:27px}.week-meal span {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .weekly-help {font-size:13px;color:var(--muted);margin-bottom:16px}
+    .shopping-layout {display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
+    .shop-panel {background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:22px;box-shadow:var(--shadow)}
+    .shop-group {padding:14px 0 3px;border-bottom:1px solid #edf0e9}.shop-group:last-of-type {border-bottom:0}
+    .group-title {font-size:13px;color:#526f57;font-weight:800;letter-spacing:.06em;margin:0 0 9px}
+    .check-row {display:flex;align-items:center;gap:10px;padding:9px 2px;font-size:14px;cursor:pointer;color:#374d40}
+    .check-row input {appearance:none;flex:none;width:19px;height:19px;border:1.5px solid #b8c8ba;border-radius:6px;background:white;display:grid;place-items:center;margin:0;cursor:pointer}
+    .check-row input:checked {background:#376f51;border-color:#376f51}
+    .check-row input:checked:before {content:'✓';font-size:13px;font-weight:900;color:white}
+    .check-row:has(input:checked) span {color:#9aa79b;text-decoration:line-through}
+    .shop-side {background:#e7eddb;border-radius:21px;padding:20px;position:sticky;top:18px}
+    .shop-side h3 {font-size:18px;margin:2px 0 7px}.shop-side p {font-size:13px;color:#637564;margin:0 0 14px}
+    .progress {background:#d1ddc8;height:8px;border-radius:99px;overflow:hidden;margin:13px 0 6px}.progress span {display:block;background:#468a63;height:100%;width:0;border-radius:99px;transition:width .25s}
+    .small-text {font-size:12px;color:#69786d}
+    .add-row {display:flex;gap:8px;margin:17px 0 10px}
+    .add-input {width:100%;min-width:0;background:#fafaf6;border:1px solid #dce5d9;border-radius:12px;padding:11px 12px;color:#2d4735;outline:0}
+    .solid-btn {border:0;border-radius:12px;background:var(--dark);color:white;padding:10px 16px;font-size:13px;font-weight:800;white-space:nowrap}
+    .solid-btn:hover {background:var(--dark2)}
+    .side-button {display:block;width:100%;border:1px solid #acc3a7;background:#fffefa;color:#41664b;padding:10px;border-radius:12px;font-weight:750;font-size:13px;margin-top:10px}
+    .plain-link {border:0;background:none;font-size:12px;color:#7e8779;text-decoration:underline;text-underline-offset:2px;padding:12px 4px}
+    .emergency {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+    .mini-card {border-radius:18px;background:var(--surface);border:1px solid var(--line);padding:18px}
+    .mini-card h3 {font-size:15px;margin:0 0 9px}.mini-card p {margin:0;color:#718173;font-size:13px}
+    .tip-items {display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip {padding:6px 10px;background:#f2f2e9;border-radius:99px;font-size:12px;color:#536758}
+    .footer {text-align:center;color:#98a397;font-size:11px;margin-top:35px;line-height:1.9}
+    .nav-mobile {display:none}
+    .toast {position:fixed;z-index:80;bottom:98px;left:50%;transform:translate(-50%,15px);background:#254837;color:white;padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.22s;box-shadow:0 7px 23px #14392522;max-width:90vw;text-align:center}
+    .toast.show {opacity:1;transform:translate(-50%,0)}
+    dialog {border:0;border-radius:23px;padding:23px;max-width:min(420px,calc(100vw - 30px));width:100%;box-shadow:0 20px 75px #0004;color:#294433;background:#fffefa}
+    dialog::backdrop {background:rgba(20,40,29,.48)}
+    dialog h3 {margin:0 0 6px;font-size:21px}dialog p {font-size:13px;color:#738174;margin:0 0 15px}dialog input {width:100%;border:1px solid #dce6d8;border-radius:12px;background:#f8f9f4;padding:13px}dialog .modal-actions {display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+    .empty-state {font-size:13px;color:#8c9a8c}
+    @media(max-width:760px){
+      .shell {padding:15px 16px 115px}.topbar{margin-bottom:18px}.hero {padding:27px 23px;border-radius:23px;min-height:188px}.hero h1{font-size:30px}.hero p{font-size:12px;max-width:275px}.hero-art{width:92px;height:92px;margin:-24px -8px -15px 0;align-self:flex-end;opacity:.9}.hero-art:before{inset:11px;border-width:3px}.hero-art .a{font-size:31px;top:21px;left:18px}.hero-art .b{font-size:24px;bottom:8px;right:9px}.hero-art .c{font-size:20px;bottom:10px;left:10px}
+      .tabs {display:none}.section-top{margin-top:24px}h2{font-size:22px}.day-strip{gap:5px;margin:18px 0 20px}.day-btn{border-radius:12px;padding:8px 1px 7px}.day-btn .weekday{font-size:11px}.day-btn .date{font-size:17px}.meal-grid{grid-template-columns:1fr;gap:12px}.meal-card{padding:17px;border-radius:19px;gap:12px}.meal-title{font-size:20px;min-height:auto}.meal-extra{min-height:auto}.weekly-list{grid-template-columns:1fr;gap:9px}.shopping-layout{grid-template-columns:1fr}.shop-side{position:static;order:-1}.shop-panel{padding:17px}.emergency{grid-template-columns:1fr}.nav-mobile{position:fixed;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;bottom:0;left:0;right:0;z-index:50;background:#fffefaee;backdrop-filter:blur(15px);padding:10px max(16px,env(safe-area-inset-right)) calc(9px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));border-top:1px solid #e5e9dd;box-shadow:0 -10px 25px #1f442511}.nav-item{border:0;background:transparent;display:grid;place-items:center;gap:1px;color:#8a958a;font-size:11px;font-weight:750;padding:5px;border-radius:11px}.nav-item .nicon{font-size:22px;line-height:1.25}.nav-item.active{background:#e7eedf;color:#2b5b41}.footer{margin-top:30px}
+    }
+    @media(max-width:380px){.hero-art{opacity:.55;margin-right:-36px}.hero h1{font-size:28px}.hero p{max-width:250px}.mode{font-size:11px}.quiet-btn{padding:8px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="logo"><span class="brand-icon" aria-hidden="true">✿</span><span>好好吃饭<span style="color:#9bab99">.</span></span></div>
+    <div class="top-right"><span class="saved-dot" aria-hidden="true"></span><span>仅保存在本机</span></div>
+  </header>
+  <section class="hero">
+    <div style="position:relative;z-index:2">
+      <div class="eyebrow">MY LITTLE MEAL PLANNER</div>
+      <h1>吃得开心，<br>也吃得有计划。</h1>
+      <p>鸡腿、牛肉、寿司、牛排都安排上。今天想做就做，忙了就灵活换。</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span class="a">🥬</span><span class="b">🍳</span><span class="c">🍅</span></div>
+  </section>
+  <nav class="tabs" aria-label="主要页面">
+    <button class="tab active" data-tab="today" type="button">☀️ 今天吃什么</button>
+    <button class="tab" data-tab="week" type="button">📅 一周安排</button>
+    <button class="tab" data-tab="shop" type="button">🧺 采购清单</button>
+  </nav>
+
+  <main>
+    <section class="page active" id="page-today" aria-label="今日菜单">
+      <div class="section-top"><div><h2 id="todayHeading">今天吃点好的</h2><p class="sub" id="todaySub">不必完美执行，灵活调整就好。</p></div><span class="pill">自由切换 · 不用算热量</span></div>
+      <div class="day-strip" id="dayStrip" aria-label="选择星期"></div>
+      <div class="section-line"><h3>🍽️ 今日安排</h3><span class="pill" id="dayStatus">本周菜单</span></div>
+      <div class="meal-grid" id="mealGrid"></div>
+      <div class="note-card"><span class="spark">🌱</span><div><strong>认真吃饭，不必苛刻。</strong><p>主食、蛋白质和蔬菜一起搭配；饿了可以加餐。寿司米和喜欢的牛排都不需要特地“补偿”。</p></div></div>
+      <div class="section-line" style="margin-top:26px"><h3>🪄 临时没计划？</h3></div>
+      <div class="emergency">
+        <div class="mini-card"><h3>很忙，不想做饭</h3><p>鸡蛋蔬菜汤面、速冻饺子搭青菜、或食堂一份正常的盖饭，都是好选择。</p><div class="tip-items"><span class="chip">简单也可以均衡</span><span class="chip">不跳餐</span></div></div>
+        <div class="mini-card"><h3>突然想吃好吃的</h3><p>想吃牛排、寿司或甜点都可以。正常享用，然后照常吃下一餐，不需要额外运动来抵消。</p><div class="tip-items"><span class="chip">没有“作弊餐”</span><span class="chip">计划可以变</span></div></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-week" aria-label="一周计划">
+      <div class="section-top"><div><h2>一周都给你安排好了</h2><p class="sub">重复用熟悉的食材，省下想菜单的时间。</p></div><span class="pill">周一 — 周日</span></div>
+      <p class="weekly-help">点击某一天，可切换做饭／食堂／外卖，也能换菜或自定义。每次更改都会自动保存在这台设备上。</p>
+      <div class="weekly-list" id="weeklyList"></div>
+      <div class="note-card"><span class="spark">💚</span><div><strong>每天的餐次并不需要固定。</strong><p>起得晚、训练日、胃口特别好，都可以灵活补充食物。这是帮你减少纠结的菜单，不是必须完成的任务表。</p></div></div>
+    </section>
+
+    <section class="page" id="page-shop" aria-label="采购清单">
+      <div class="section-top"><div><h2>去超市就照着买</h2><p class="sub">勾选已买的东西，下次打开还在。</p></div><span class="pill">一周采购参考</span></div>
+      <div class="shopping-layout">
+        <div class="shop-panel">
+          <div id="shoppingGroups"></div>
+          <form class="add-row" id="addForm"><input class="add-input" type="text" id="addInput" maxlength="35" placeholder="＋ 添加想买的东西" aria-label="添加采购物品" required /><button class="solid-btn" type="submit">添加</button></form>
+          <button class="plain-link" type="button" id="resetChecks">重置本周勾选</button>
+        </div>
+        <aside class="shop-side"><div style="font-size:30px" aria-hidden="true">🧺</div><h3>不需要一次买齐</h3><p>肉类分装冷冻；新鲜绿叶菜可以中途补货。日料、食堂和外卖的食材不用自己买。</p><div class="progress" aria-label="采购完成度"><span id="progressBar"></span></div><span class="small-text" id="progressText">0 项已勾选</span><button class="side-button" type="button" id="copyList">⧉ 复制采购清单</button><button class="side-button" type="button" id="copyWeek">⧉ 复制一周菜单</button></aside>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">好好吃饭 · Little Meal Planner<br>每一顿都可以灵活调整。数据只存在当前浏览器，没有账号，也不会上传。</footer>
+</div>
+
+<nav class="nav-mobile" aria-label="手机导航">
+  <button class="nav-item active" data-tab="today" type="button"><span class="nicon">☀️</span>今天</button>
+  <button class="nav-item" data-tab="week" type="button"><span class="nicon">📅</span>一周</button>
+  <button class="nav-item" data-tab="shop" type="button"><span class="nicon">🧺</span>买菜</button>
+</nav>
+<div class="toast" role="status" id="toast" aria-live="polite"></div>
+<dialog id="editModal"><form id="editForm"><h3>换成你想吃的 ✨</h3><p>临时想吃什么就写什么，之后仍可切换到默认推荐。</p><input id="customMealInput" type="text" maxlength="60" required placeholder="比如：黑椒牛排＋土豆＋蔬菜" aria-label="自定义餐食名称" /><div class="modal-actions"><button type="button" class="quiet-btn" style="flex:0" id="cancelModal">取消</button><button type="submit" class="solid-btn">保存菜单</button></div></form></dialog>
+<noscript><p style="padding:20px;text-align:center">请开启浏览器 JavaScript 才能查看和修改这份菜单。</p></noscript>
+<script>
+(()=>{
+  'use strict';
+  const WEEKDAYS=['周一','周二','周三','周四','周五','周六','周日'];
+  const MODES={home:'自己做',canteen:'食堂',delivery:'外卖'};
+  const DB=[
+    {l:{default:'home',home:[['香煎去皮鸡腿饭','西兰花 · 胡萝卜 · 米饭','🍗'],['黑椒鸡腿蘑菇饭','炒青菜 · 米饭','🍄']],canteen:[['鸡腿饭＋时蔬','加一份豆腐也不错','🍗'],['牛肉盖饭＋蔬菜','简单又方便','🥩']],delivery:[['鸡肉饭＋蔬菜','主食正常吃就好','🍱'],['番茄牛肉饭','搭配喜欢的青菜','🍅']]},d:{default:'home',home:[['番茄牛腩炖土豆','搭配米饭和青菜','🥘'],['土豆胡萝卜炖牛肉','配米饭更满足','🥩']],canteen:[['番茄牛肉盖饭','配小青菜','🍛'],['鸡蛋豆腐＋牛肉菜','搭配米饭','🥗']],delivery:[['番茄炖牛肉套餐','搭配蔬菜','🥘'],['牛肉蔬菜汤面','热乎乎的一碗','🍜']]},tip:'炖牛腩可以多做一份，另一顿更省事。'},
+    {l:{default:'delivery',home:[['三文鱼饭＋毛豆','配蔬菜 · 米饭','🍣'],['香煎鱼排配米饭','搭配时蔬','🐟']],canteen:[['鱼肉套餐＋蔬菜','搭配米饭','🐟'],['鸡腿饭＋豆腐青菜','食堂版也很好','🍗']],delivery:[['三文鱼寿司＋毛豆','再来一份喜欢的蔬菜','🍣'],['喜欢的刺身饭','配海藻沙拉或毛豆','🍱']]},d:{default:'canteen',home:[['黑椒鸡腿肉＋蘑菇','搭配米饭和绿叶菜','🍄'],['香煎鸡腿配烤土豆','搭配番茄沙拉','🍗']],canteen:[['虾仁鸡蛋面＋青菜','热汤面补充能量','🍜'],['鸡腿饭＋时蔬','方便又熟悉','🍗']],delivery:[['虾仁鸡蛋汤面','多一份青菜','🍜'],['鸡肉蔬菜盖饭','好好吃一顿','🍱']]},tip:'寿司米不需要刻意减少，正常享用喜欢的寿司。'},
+    {l:{default:'canteen',home:[['牛肉彩椒炒饭','再搭点小青菜','🥩'],['牛肉土豆盖饭','米饭 · 蔬菜','🍛']],canteen:[['牛肉炒菜＋米饭','搭配青菜和豆腐','🥩'],['鸡腿饭＋蔬菜','食堂好选项','🍗']],delivery:[['牛肉蔬菜饭','可以搭配菌菇','🍱'],['日式鸡腿肉饭','配蔬菜','🍚']]},d:{default:'home',home:[['虾仁豆腐煲＋红薯','配绿叶菜','🦐'],['番茄鸡蛋虾仁饭','搭配时蔬','🍤']],canteen:[['虾仁鸡蛋饭','搭配绿叶菜','🍳'],['豆腐炖菜＋米饭','可以加肉类','🥬']],delivery:[['虾仁蔬菜盖饭','配米饭','🍤'],['菌菇豆腐汤面','可配鸡蛋','🍜']]},tip:'今天如果比较忙，食堂套餐完全可以替代自己做。'},
+    {l:{default:'home',home:[['照烧鸡腿饭','烤南瓜 · 青菜','🍗'],['香煎鸡腿荞麦面','搭配菌菇','🍜']],canteen:[['鸡腿饭＋南瓜','再加喜欢的蔬菜','🍗'],['牛肉面＋青菜','简单又香','🍜']],delivery:[['照烧鸡腿饭','加份蔬菜','🍱'],['牛肉米线','搭配蔬菜','🍜']]},d:{default:'delivery',home:[['牛肉菌菇汤面','搭配小白菜','🍜'],['番茄牛肉面','配鸡蛋与青菜','🍅']],canteen:[['牛肉汤面＋青菜','热乎又方便','🍜'],['鸡蛋豆腐饭','再来点蔬菜','🍚']],delivery:[['牛肉米线＋蔬菜','喜欢辣也可以','🍜'],['番茄牛肉面','加青菜','🍅']]},tip:'照烧鸡腿的酱汁按自己的口味放，不用追求“零油零糖”。'},
+    {l:{default:'canteen',home:[['鸡蛋豆腐菌菇饭','配一盘青菜','🍳'],['香煎鸡腿便当','米饭 · 西兰花','🍗']],canteen:[['喜欢的家常菜套餐','米饭＋肉或豆腐＋蔬菜','🍚'],['牛肉配青菜＋米饭','正常吃饭就好','🥩']],delivery:[['鸡肉便当＋蔬菜','周五轻松一点','🍱'],['日式牛肉饭','搭配蔬菜','🍚']]},d:{default:'home',home:[['香煎牛排＋烤土豆','蘑菇 · 芦笋','🥩'],['黑椒牛排＋米饭','配烤蔬菜','🥩']],canteen:[['牛排饭＋蔬菜','配你喜欢的主食','🥩'],['牛肉套餐＋土豆','搭配青菜','🍛']],delivery:[['牛排套餐＋蔬菜','记得搭配主食','🥩'],['黑椒牛肉饭','搭配时蔬','🍱']]},tip:'周五牛排日！喜欢吃的食物也属于正常的一周菜单。'},
+    {l:{default:'delivery',home:[['香煎三文鱼饭','毛豆 · 蔬菜','🐟'],['鸡腿蔬菜饭','再搭点豆腐','🍗']],canteen:[['鱼肉套餐＋米饭','搭配绿叶菜','🐟'],['牛肉饭＋蔬菜','按口味选','🍚']],delivery:[['寿司＋刺身＋蔬菜','也可以加毛豆和汤','🍣'],['鸡腿饭＋蔬菜','改改口味','🍱']]},d:{default:'home',home:[['番茄鸡蛋鸡腿面','搭配青菜','🍜'],['香煎鸡腿＋玉米','配炒时蔬','🍗']],canteen:[['鸡蛋肉丝汤面','多加青菜','🍜'],['豆腐炖菜＋米饭','搭配肉类也好','🥘']],delivery:[['番茄鸡蛋面＋肉','加份青菜','🍜'],['牛肉盖饭＋蔬菜','周末轻松吃','🍱']]},tip:'外食不用有“放纵日”的概念，吃完照常安排下一餐。'},
+    {l:{default:'home',home:[['土豆炖牛肉＋米饭','搭配绿叶菜','🥘'],['香煎鸡腿＋米饭','搭配蘑菇西兰花','🍗']],canteen:[['牛肉土豆饭＋青菜','食堂有就直接选','🥩'],['鸡肉蔬菜盖饭','方便省时间','🍚']],delivery:[['牛肉炖菜套餐','搭配蔬菜','🍱'],['鸡腿便当','周末不折腾','🍗']]},d:{default:'canteen',home:[['番茄鸡蛋汤面','可加豆腐、鸡腿肉','🍜'],['菌菇鸡蛋饭','配小青菜','🍳']],canteen:[['家常菜饭＋蔬菜','挑自己喜欢的','🍚'],['牛肉鸡蛋面','搭配青菜','🍜']],delivery:[['蔬菜牛肉汤面','暖暖收尾','🍜'],['鸡肉饭＋蔬菜','下周继续好好吃','🍱']]},tip:'有时间可以分装部分熟食冷冻；冷藏剩菜及时吃完并充分加热。'}
+  ];
+  const GROUPS=[{key:'protein',title:'🥩 肉类 · 蛋白质',items:['去骨鸡腿肉','牛肉（炖煮或炒）','牛排','鸡蛋','豆腐','鱼或虾']},{key:'carb',title:'🍚 主食 · 能量',items:['大米或杂粮','土豆 / 红薯','面条','玉米 / 南瓜']},{key:'veg',title:'🥬 蔬菜 · 水果',items:['西兰花','番茄 · 胡萝卜','菌菇','绿叶菜','喜欢的水果']},{key:'extra',title:'🥜 常备 · 加餐',items:['豆浆或其他喜欢的饮品','坚果','方便加餐的面包或饼干']}];
+  const KEY='good-meals-v1';
+  function defaultState(){return {choices:{},checked:{},customItems:[]};}
+  function load(){try{const p=JSON.parse(localStorage.getItem(KEY));return (p&&typeof p==='object')?{...defaultState(),...p}:defaultState();}catch(e){return defaultState();}}
+  let state=load();
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){/* Some browsers block localStorage; keep current session functional. */}}
+  const $=id=>document.getElementById(id);
+  const escapeHTML=str=>String(str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  const jsDay=(new Date().getDay()+6)%7;
+  let selectedDay=jsDay,activeTab='today',editing=null,toastTimer=null;
+  function dateOfDay(day){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-jsDay+day);return d;}
+  function keyFor(day,meal){return day+'-'+meal}
+  function choiceFor(day,meal){const k=keyFor(day,meal),s=state.choices[k]||{},obj=DB[day][meal],mode=s.mode&&MODES[s.mode]?s.mode:obj.default,options=obj[mode],index=(Number.isInteger(s.index)&&s.index>=0)?s.index%options.length:0;return {mode,index,options,item: s.custom&&mode===s.customMode?[s.custom,'你自己安排的餐食','✨']:options[index]};}
+  function setMode(day,meal,mode){const k=keyFor(day,meal);state.choices[k]={...(state.choices[k]||{}),mode,index:0};save();renderMeals();renderWeek();}
+  function rotate(day,meal){const k=keyFor(day,meal),c=choiceFor(day,meal);state.choices[k]={...(state.choices[k]||{}),mode:c.mode,index:(c.index+1)%c.options.length,custom:null};save();renderMeals();renderWeek();showToast('换一道啦，喜欢哪个就选哪个');}
+  function renderDays(){const today=dateOfDay(jsDay);$('dayStrip').innerHTML=WEEKDAYS.map((w,i)=>{const d=dateOfDay(i);return `<button type="button" class="day-btn ${i===selectedDay?'active':''} ${i===jsDay?'is-today':''}" data-day="${i}" aria-pressed="${i===selectedDay}" aria-label="${w} ${d.getMonth()+1}月${d.getDate()}日"><span class="weekday">${w.replace('周','')}</span><span class="date">${d.getDate()}</span><span class="today-mark"></span></button>`;}).join('');
+    $('todayHeading').textContent=selectedDay===jsDay?'今天吃点好的':'看看'+WEEKDAYS[selectedDay]+'吃什么';
+    const d=dateOfDay(selectedDay);$('todaySub').textContent=`${d.getMonth()+1}月${d.getDate()}日 · 不必完美执行，灵活调整就好。`;
+    $('dayStatus').textContent=selectedDay===jsDay?'● 今天':'已选 '+WEEKDAYS[selectedDay];
+  }
+  function mealCard(day,meal){const c=choiceFor(day,meal);return `<article class="meal-card"><div class="meal-top"><span class="meal-label">${meal==='l'?'🌤️ 午餐':'🌙 晚餐'}</span><span class="meal-emoji" aria-hidden="true">${escapeHTML(c.item[2])}</span></div><div><div class="meal-title">${escapeHTML(c.item[0])}</div><div class="meal-extra">${escapeHTML(c.item[1])}</div></div><div class="modes" role="group" aria-label="${meal==='l'?'午餐':'晚餐'}就餐方式">${Object.entries(MODES).map(([m,label])=>`<button type="button" class="mode ${c.mode===m?'active':''}" aria-pressed="${c.mode===m}" data-mode="${m}" data-meal="${meal}">${label}</button>`).join('')}</div><div class="meal-actions"><button type="button" class="quiet-btn" data-rotate="${meal}">↻ 换一道</button><button type="button" class="quiet-btn" data-edit="${meal}">✎ 自定义</button></div></article>`;}
+  function renderMeals(){renderDays();$('mealGrid').innerHTML=mealCard(selectedDay,'l')+mealCard(selectedDay,'d');$('dayStatus').title=DB[selectedDay].tip;}
+  function renderWeek(){ $('weeklyList').innerHTML=DB.map((d,i)=>{const a=choiceFor(i,'l'),b=choiceFor(i,'d');return `<button type="button" class="week-card ${i===jsDay?'current':''}" data-weekday="${i}"><div class="week-top"><span class="week-title">${WEEKDAYS[i]} <span style="font-weight:500;color:#9aab9b;font-size:12px">${dateOfDay(i).getMonth()+1}/${dateOfDay(i).getDate()}</span></span>${i===jsDay?'<span class="week-current">今天</span>':'<span style="font-size:14px;color:#99aa9c">↗</span>'}</div><div class="week-meal"><small>午餐</small><span>${escapeHTML(a.item[0])}</span></div><div class="week-meal"><small>晚餐</small><span>${escapeHTML(b.item[0])}</span></div><div class="week-meal" style="font-size:11px;color:#819283;margin-top:11px"><span>${MODES[a.mode]} · ${MODES[b.mode]}</span></div></button>`;}).join('');}
+  function allItems(){const base=GROUPS.flatMap(g=>g.items.map(name=>({id:'b:'+name,name,group:g.key})));return [...base,...(state.customItems||[]).map(x=>({...x,group:'custom'}))];}
+  function renderShop(){const extra=state.customItems||[];let html=GROUPS.map(g=>groupHTML(g.title,g.items.map(name=>({id:'b:'+name,name})))).join('');if(extra.length)html+=groupHTML('✨ 自己添加',extra);$('shoppingGroups').innerHTML=html;const items=allItems();let n=items.filter(x=>state.checked[x.id]).length;$('progressBar').style.width=items.length?`${n/items.length*100}%`:'0%';$('progressText').textContent=`${n} / ${items.length} 项已勾选`;}
+  function groupHTML(title,items){return `<div class="shop-group"><div class="group-title">${escapeHTML(title)}</div>${items.map(x=>`<label class="check-row"><input type="checkbox" data-check="${escapeHTML(x.id)}" ${state.checked[x.id]?'checked':''}/><span>${escapeHTML(x.name)}</span>${x.id.startsWith('c:')?`<button type="button" title="删除这项" aria-label="删除${escapeHTML(x.name)}" data-remove="${escapeHTML(x.id)}" style="margin-left:auto;border:0;background:none;color:#adb6aa;font-size:18px">×</button>`:''}</label>`).join('')}</div>`;}
+  function switchTab(tab){if(!['today','week','shop'].includes(tab))return;activeTab=tab;document.querySelectorAll('[data-tab]').forEach(el=>{const active=el.dataset.tab===tab;el.classList.toggle('active',active);if(el.classList.contains('tab'))el.setAttribute('aria-current',active?'page':'false')});document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+tab));if(tab==='today')renderMeals();if(tab==='week')renderWeek();if(tab==='shop')renderShop();window.scrollTo({top:0,behavior:'instant'});}
+  function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+  function openEditor(meal){editing={day:selectedDay,meal};const c=choiceFor(selectedDay,meal);$('customMealInput').value=state.choices[keyFor(selectedDay,meal)]?.custom||'';$('editModal').showModal();$('customMealInput').focus();}
+  function weekText(){return DB.map((d,i)=>`${WEEKDAYS[i]}\n午餐：${choiceFor(i,'l').item[0]}（${MODES[choiceFor(i,'l').mode]}）\n晚餐：${choiceFor(i,'d').item[0]}（${MODES[choiceFor(i,'d').mode]}）`).join('\n\n');}
+  async function copyText(value){try{await navigator.clipboard.writeText(value);showToast('已复制，可以发给自己或家人');}catch(e){const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_e){}ta.remove();showToast(ok?'已复制':'复制失败，请使用浏览器的复制功能');}}
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('[data-tab]');if(tab){switchTab(tab.dataset.tab);return;}
+    const day=e.target.closest('[data-day]');if(day){selectedDay=+day.dataset.day;renderMeals();return;}
+    const week=e.target.closest('[data-weekday]');if(week){selectedDay=+week.dataset.weekday;switchTab('today');return;}
+    const mode=e.target.closest('[data-mode]');if(mode){setMode(selectedDay,mode.dataset.meal,mode.dataset.mode);return;}
+    const rot=e.target.closest('[data-rotate]');if(rot){rotate(selectedDay,rot.dataset.rotate);return;}
+    const edit=e.target.closest('[data-edit]');if(edit){openEditor(edit.dataset.edit);return;}
+    const remove=e.target.closest('[data-remove]');if(remove){state.customItems=(state.customItems||[]).filter(x=>x.id!==remove.dataset.remove);delete state.checked[remove.dataset.remove];save();renderShop();return;}
+  });
+  document.addEventListener('change',e=>{const checkbox=e.target.closest('[data-check]');if(checkbox){state.checked[checkbox.dataset.check]=checkbox.checked;save();renderShop();}});
+  $('addForm').addEventListener('submit',e=>{e.preventDefault();const inp=$('addInput'),name=inp.value.trim();if(!name)return;const id='c:'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6);state.customItems.push({id,name});save();inp.value='';renderShop();showToast('已加到采购清单');});
+  $('resetChecks').addEventListener('click',()=>{state.checked={};save();renderShop();showToast('已重置勾选，菜单没有改变');});
+  $('copyList').addEventListener('click',()=>{copyText(GROUPS.map(g=>`${g.title}\n${g.items.map(x=>(state.checked['b:'+x]?'☑':'☐')+' '+x).join('\n')}`).join('\n\n')+(state.customItems.length?'\n\n自己添加\n'+state.customItems.map(x=>(state.checked[x.id]?'☑':'☐')+' '+x.name).join('\n'):''));});
+  $('copyWeek').addEventListener('click',()=>copyText(weekText()));
+  $('cancelModal').addEventListener('click',()=>$('editModal').close());
+  $('editForm').addEventListener('submit',e=>{e.preventDefault();if(!editing)return;const val=$('customMealInput').value.trim();if(!val)return;const k=keyFor(editing.day,editing.meal),c=choiceFor(editing.day,editing.meal);state.choices[k]={...(state.choices[k]||{}),mode:c.mode,index:c.index,custom:val,customMode:c.mode};save();$('editModal').close();renderMeals();renderWeek();showToast('已经保存你的自定义菜单');});
+  renderMeals();renderWeek();renderShop();
+})();
+</script>
+</body>
+</html>
