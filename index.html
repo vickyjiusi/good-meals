@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f6f4eb" />
-  <meta name="description" content="七天菜单、百道食谱库、食堂外卖切换与采购清单，手机随时查看。" />
-  <!-- version: expanded-recipe-library -->
+  <meta name="description" content="七天菜单、111道菜谱库、周二周五力量训练与周四周日爬坡提示，手机随时查看。" />
+  <!-- version: weekly-training-schedule-v3 -->
   <title>好好吃饭 · 一周食谱与菜谱库</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='22' fill='%232e5540'/%3E%3Ccircle cx='40' cy='42' r='23' fill='%23fff4db'/%3E%3Ccircle cx='40' cy='42' r='12' fill='%23f4aa6b'/%3E%3Cpath d='M20 20l9 9M60 20l-9 9' stroke='%23d9e9d6' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <style>
@@ -137,6 +137,37 @@
     .recipe-category{font-size:11px;color:#789078;background:#eef3e8;border-radius:99px;padding:5px 8px;white-space:nowrap}
     .choose-btn{background:var(--dark);border:0;color:white;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:800;white-space:nowrap}
     .library-empty{grid-column:1/-1;padding:35px 16px;text-align:center;color:#8b998b;background:var(--surface);border-radius:19px}
+    /* Weekly movement routine: gentle food support, never a restriction plan. */
+    .day-btn .training-mark{display:block;margin:3px auto 1px;font-size:10px;line-height:1.35;font-weight:780;color:#819086;white-space:nowrap}
+    .day-btn .training-mark.strength{color:#b07538}.day-btn .training-mark.cardio{color:#397a7a}
+    .day-btn.active .training-mark{color:#f2e1ae}
+    .training-panel{display:grid;grid-template-columns:1.06fr 1fr;gap:16px;padding:20px 22px;border:1px solid #dce6d4;border-radius:22px;background:linear-gradient(125deg,#eaf1e3,#fffdf5);margin:0 0 23px}
+    .training-panel.strength{background:linear-gradient(125deg,#f5ebdc,#fffefa);border-color:#ebdfca}
+    .training-panel.cardio{background:linear-gradient(125deg,#e2f1ed,#fefefa);border-color:#d1e8e3}
+    .training-lead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .training-bubble{font-size:24px;display:grid;place-items:center;background:#ffffffac;width:45px;height:45px;border-radius:15px;flex:none}
+    .training-kicker{font-size:11px;color:#758879;font-weight:800;letter-spacing:.065em}
+    .training-title{font-size:19px;line-height:1.35;font-weight:850;letter-spacing:-.025em}
+    .training-desc{font-size:13px;color:#657766;margin:5px 0 0;line-height:1.75}
+    .training-food{align-self:center;padding:12px 14px;border:1px solid #e4eadd;background:#fffefa;border-radius:16px}
+    .training-food-label{font-size:11px;color:#6d816f;font-weight:800;margin-bottom:6px}
+    .training-food-item{font-size:13px;color:#354d3c;margin:5px 0;line-height:1.6}
+    .training-food-item span{color:#849387;font-size:11px;font-weight:750;margin-right:7px}
+    .training-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:19px}
+    .train-day{min-width:0;border:1px solid #e5e8dd;border-radius:16px;background:#fffefa;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;color:#385544;min-height:122px}
+    .train-day:hover{border-color:#91aa93;transform:translateY(-1px)}
+    .train-day.strength{background:#fff8ed;border-color:#eee1c9}.train-day.cardio{background:#edf8f4;border-color:#d8e9e1}
+    .train-day.current{box-shadow:0 0 0 2px #8ba88a inset}
+    .train-day-name{font-size:12px;font-weight:850}.train-day-icon{font-size:22px}.train-day-label{font-size:11px;font-weight:750;color:#557160;text-align:center}
+    .week-card .week-workout{display:inline-flex;align-items:center;gap:4px;color:#55765f;font-size:11px;font-weight:750;background:#eef4e9;padding:4px 8px;border-radius:99px}
+    .week-card .week-workout.strength{background:#fff3df;color:#9b6735}.week-card .week-workout.cardio{background:#e4f4ef;color:#367d76}
+    @media(max-width:760px){
+      .training-panel{grid-template-columns:1fr;padding:16px;gap:12px;border-radius:18px;margin-bottom:17px}
+      .training-title{font-size:17px}.training-desc{font-size:12px}
+      .training-week{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.train-day{min-height:94px;padding:10px 4px;gap:3px;border-radius:13px}
+      .train-day-name{font-size:11px}.train-day-icon{font-size:19px}.train-day-label{font-size:10px}
+      .day-btn .training-mark{font-size:9px;letter-spacing:-.02em}
+    }
     @media(max-width:760px){.library-toolbar{align-items:stretch}.library-mode{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.recipe-card{padding:12px;border-radius:15px}.recipe-title{font-size:14px}.recipe-desc{font-size:11px}.recipe-category{font-size:10px}.choose-btn{padding:8px}.filter-scroll{margin-left:-16px;margin-right:-16px;padding:0 16px 9px}.nav-mobile{grid-template-columns:repeat(4,minmax(0,1fr))}.nav-item{font-size:10px}}
     @media(max-width:375px){.library-grid{grid-template-columns:1fr}.recipe-desc{min-height:0}}
     @media(max-width:760px){
@@ -157,7 +188,7 @@
     <div style="position:relative;z-index:2">
       <div class="eyebrow">MY LITTLE MEAL PLANNER</div>
       <h1>吃得开心，<br>也吃得有计划。</h1>
-      <p>鸡腿、牛肉、寿司、牛排都安排上。今天想做就做，忙了就灵活换。</p>
+      <p>喜欢的菜，跟着训练节奏吃好每一餐。想做就做，忙了就灵活换。</p>
     </div>
     <div class="hero-art" aria-hidden="true"><span class="a">🥬</span><span class="b">🍳</span><span class="c">🍅</span></div>
   </section>
@@ -171,7 +202,8 @@
   <main>
     <section class="page active" id="page-today" aria-label="今日菜单">
       <div class="section-top"><div><h2 id="todayHeading">今天吃点好的</h2><p class="sub" id="todaySub">不必完美执行，灵活调整就好。</p></div><span class="pill">自由切换 · 不用算热量</span></div>
-      <div class="day-strip" id="dayStrip" aria-label="选择星期"></div>
+      <div class="day-strip" id="dayStrip" aria-label="选择星期和查看训练安排"></div>
+      <section class="training-panel" id="trainingPanel" aria-label="所选日期的训练和饮食提示" aria-live="polite"></section>
       <div class="section-line"><h3>🍽️ 今日安排</h3><span class="pill" id="dayStatus">本周菜单</span></div>
       <div class="meal-grid" id="mealGrid"></div>
       <div class="note-card"><span class="spark">🌱</span><div><strong>认真吃饭，不必苛刻。</strong><p>主食、蛋白质和蔬菜一起搭配；饿了可以加餐。寿司米和喜欢的牛排都不需要特地“补偿”。</p></div></div>
@@ -184,7 +216,10 @@
 
     <section class="page" id="page-week" aria-label="一周计划">
       <div class="section-top"><div><h2>一周都给你安排好了</h2><p class="sub">重复用熟悉的食材，省下想菜单的时间。</p></div><span class="pill">周一 — 周日</span></div>
-      <p class="weekly-help">点击某一天，可切换做饭／食堂／外卖，或者从百道菜谱里挑喜欢的。每次更改都会自动保存在这台设备上。</p>
+      <p class="weekly-help">周二、周五是力量训练；周四、周日是爬坡有氧。点击任一天查看适合当天的饮食提示，也能换菜、从111道菜谱里挑选。</p>
+      <div class="section-line"><h3>🏃‍♀️ 我的每周运动节奏</h3><span class="pill">固定安排 · 自动每周重复</span></div>
+      <div class="training-week" id="trainingWeek" aria-label="每周运动安排"></div>
+      <div class="section-line" style="margin-top:24px"><h3>🍽️ 一周菜单</h3></div>
       <div class="weekly-list" id="weeklyList"></div>
       <div class="note-card"><span class="spark">💚</span><div><strong>每天的餐次并不需要固定。</strong><p>起得晚、训练日、胃口特别好，都可以灵活补充食物。这是帮你减少纠结的菜单，不是必须完成的任务表。</p></div></div>
     </section>
@@ -211,7 +246,7 @@
           <form class="add-row" id="addForm"><input class="add-input" type="text" id="addInput" maxlength="35" placeholder="＋ 添加想买的东西" aria-label="添加采购物品" required /><button class="solid-btn" type="submit">添加</button></form>
           <button class="plain-link" type="button" id="resetChecks">重置本周勾选</button>
         </div>
-        <aside class="shop-side"><div style="font-size:30px" aria-hidden="true">🧺</div><h3>不需要一次买齐</h3><p>肉类分装冷冻；新鲜绿叶菜可以中途补货。日料、食堂和外卖的食材不用自己买。</p><div class="progress" aria-label="采购完成度"><span id="progressBar"></span></div><span class="small-text" id="progressText">0 项已勾选</span><button class="side-button" type="button" id="copyList">⧉ 复制采购清单</button><button class="side-button" type="button" id="copyWeek">⧉ 复制一周菜单</button></aside>
+        <aside class="shop-side"><div style="font-size:30px" aria-hidden="true">🧺</div><h3>不需要一次买齐</h3><p>肉类可以提前分装冷冻；周二／周五力量日、周四／周日爬坡日可常备水果、面包等方便加餐的食物。</p><div class="progress" aria-label="采购完成度"><span id="progressBar"></span></div><span class="small-text" id="progressText">0 项已勾选</span><button class="side-button" type="button" id="copyList">⧉ 复制采购清单</button><button class="side-button" type="button" id="copyWeek">⧉ 复制一周菜单</button></aside>
       </div>
     </section>
   </main>
@@ -231,6 +266,16 @@
 (()=>{
   'use strict';
   const WEEKDAYS=['周一','周二','周三','周四','周五','周六','周日'];
+  const TRAINING=[
+    {type:'rest',label:'休息',icon:'🌿',title:'恢复 / 自由活动日',desc:'休息日也要正常吃饭，让身体有时间恢复。如果想散步可以轻松活动，感觉累就安心休息。',first:'像平时一样享用有主食、蛋白质和蔬菜的正餐',second:'饿了可以加餐，不需要因为今天没训练而少吃'},
+    {type:'strength',label:'力量',icon:'🏋️',title:'力量训练日',desc:'今天练力量！练前若距离上一餐较久，可以补充容易消化的食物；练后正常吃一顿完整正餐，帮助身体恢复。',first:'训练前按需：香蕉＋面包 / 饭团 / 豆浆',second:'训练后正餐：鸡腿饭 / 牛肉面 / 三文鱼饭＋蔬菜'},
+    {type:'rest',label:'休息',icon:'🌿',title:'恢复 / 自由活动日',desc:'昨天练过力量，今天可以把恢复放在前面。不必用少吃来“抵消”休息日，正常吃饭和睡好觉都很重要。',first:'正餐可以继续吃牛肉、鸡腿、鸡蛋或豆腐',second:'主食正常吃，按食欲添加水果或加餐'},
+    {type:'cardio',label:'爬坡',icon:'🥾',title:'爬坡有氧日',desc:'爬坡日也需要能量和水分。不必刻意空腹训练；如果觉得饿，先吃一点，再按自己舒服的强度运动。',first:'活动前按需：香蕉 / 吐司 / 小饭团',second:'活动后：正常吃含主食和蛋白质的一餐，记得补水'},
+    {type:'strength',label:'力量',icon:'🏋️',title:'力量训练日',desc:'周五力量训练＋牛排晚餐，搭配起来刚刚好。牛排配土豆、米饭和蔬菜都可以，不必刻意减少主食。',first:'训练前按需：水果＋面包 / 饭团',second:'训练后正餐：牛排＋土豆＋蔬菜，或喜欢的鸡腿饭'},
+    {type:'rest',label:'休息',icon:'🌿',title:'恢复 / 自由活动日',desc:'今天更适合轻松安排。外出吃寿司、和朋友聚餐或在家做饭都可以，吃饭不需要按“补偿运动”的逻辑安排。',first:'日料：寿司＋刺身＋毛豆或蔬菜',second:'在家：鸡腿饭 / 番茄牛肉饭，按胃口自由选'},
+    {type:'cardio',label:'爬坡',icon:'🥾',title:'爬坡有氧日',desc:'今天安排了爬坡，保持水分和正常吃饭即可。累了适当调整运动安排，恢复比强行完成计划重要。',first:'活动前按需：面包 / 水果 / 小饭团',second:'活动后正餐：牛肉饭 / 鸡蛋汤面＋蔬菜，正常补水'}
+  ];
+
   const MODES={home:'自己做',canteen:'食堂',delivery:'外卖'};
   const DB=[
     {l:{default:'home',home:[['香煎去皮鸡腿饭','西兰花 · 胡萝卜 · 米饭','🍗'],['黑椒鸡腿蘑菇饭','炒青菜 · 米饭','🍄']],canteen:[['鸡腿饭＋时蔬','加一份豆腐也不错','🍗'],['牛肉盖饭＋蔬菜','简单又方便','🥩']],delivery:[['鸡肉饭＋蔬菜','主食正常吃就好','🍱'],['番茄牛肉饭','搭配喜欢的青菜','🍅']]},d:{default:'home',home:[['番茄牛腩炖土豆','搭配米饭和青菜','🥘'],['土豆胡萝卜炖牛肉','配米饭更满足','🥩']],canteen:[['番茄牛肉盖饭','配小青菜','🍛'],['鸡蛋豆腐＋牛肉菜','搭配米饭','🥗']],delivery:[['番茄炖牛肉套餐','搭配蔬菜','🥘'],['牛肉蔬菜汤面','热乎乎的一碗','🍜']]},tip:'炖牛腩可以多做一份，另一顿更省事。'},
@@ -300,21 +345,29 @@
     $('librarySummary').textContent=`找到 ${list.length} 道 · ${WEEKDAYS[libraryTarget.day]}${libraryTarget.meal==='l'?'午餐':'晚餐'} · ${libraryMode==='all'?'全部方式':MODES[libraryMode]}`;
     $('libraryResults').innerHTML=list.length?list.map(r=>`<article class="recipe-card"><div class="recipe-top"><span class="recipe-emoji" aria-hidden="true">${escapeHTML(r.emoji)}</span><button type="button" class="fav-btn ${state.favorites?.[r.id]?'active':''}" data-fav="${r.id}" aria-label="${state.favorites?.[r.id]?'取消收藏':'收藏'}${escapeHTML(r.name)}" title="${state.favorites?.[r.id]?'取消收藏':'收藏'}">${state.favorites?.[r.id]?'♥':'♡'}</button></div><div class="recipe-title">${escapeHTML(r.name)}</div><div class="recipe-desc">${escapeHTML(r.desc)}</div><div class="recipe-footer"><span class="recipe-category">${escapeHTML(r.cuisine)}</span><button type="button" class="choose-btn" data-choose="${r.id}">选这道 ↗</button></div></article>`).join(''):`<div class="library-empty">暂时没找到这类菜 🍃<br>试试切换「全部」方式或换个菜系。${libraryMode!=='all'?'<br><button class="solid-btn" style="margin-top:12px" data-library-mode="all" type="button">查看全部方式</button>':''}</div>`;
   }
-  function renderDays(){const today=dateOfDay(jsDay);$('dayStrip').innerHTML=WEEKDAYS.map((w,i)=>{const d=dateOfDay(i);return `<button type="button" class="day-btn ${i===selectedDay?'active':''} ${i===jsDay?'is-today':''}" data-day="${i}" aria-pressed="${i===selectedDay}" aria-label="${w} ${d.getMonth()+1}月${d.getDate()}日"><span class="weekday">${w.replace('周','')}</span><span class="date">${d.getDate()}</span><span class="today-mark"></span></button>`;}).join('');
+  function renderDays(){ $('dayStrip').innerHTML=WEEKDAYS.map((w,i)=>{const d=dateOfDay(i),t=TRAINING[i];return `<button type="button" class="day-btn ${i===selectedDay?'active':''} ${i===jsDay?'is-today':''}" data-day="${i}" aria-pressed="${i===selectedDay}" aria-label="${w} ${d.getMonth()+1}月${d.getDate()}日，${t.title}"><span class="weekday">${w.replace('周','')}</span><span class="date">${d.getDate()}</span><span class="training-mark ${t.type}">${t.label}</span><span class="today-mark"></span></button>`;}).join('');
     $('todayHeading').textContent=selectedDay===jsDay?'今天吃点好的':'看看'+WEEKDAYS[selectedDay]+'吃什么';
     const d=dateOfDay(selectedDay);$('todaySub').textContent=`${d.getMonth()+1}月${d.getDate()}日 · 不必完美执行，灵活调整就好。`;
     $('dayStatus').textContent=selectedDay===jsDay?'● 今天':'已选 '+WEEKDAYS[selectedDay];
   }
+  function renderTraining(day){
+    const t=TRAINING[day],box=$('trainingPanel');
+    box.className='training-panel '+t.type;
+    box.innerHTML=`<div><div class="training-lead"><span class="training-bubble" aria-hidden="true">${t.icon}</span><div><div class="training-kicker">${WEEKDAYS[day]} · 本周固定节奏</div><div class="training-title">${t.title}</div></div></div><p class="training-desc">${t.desc}</p></div><div class="training-food"><div class="training-food-label">🍚 今天可以这样吃</div><div class="training-food-item"><span>①</span>${t.first}</div><div class="training-food-item"><span>②</span>${t.second}</div></div>`;
+  }
+  function renderTrainingWeek(){
+    $('trainingWeek').innerHTML=TRAINING.map((t,i)=>`<button type="button" class="train-day ${t.type} ${i===jsDay?'current':''}" data-weekday="${i}" aria-label="查看${WEEKDAYS[i]} ${t.title}"><span class="train-day-name">${WEEKDAYS[i]}</span><span class="train-day-icon" aria-hidden="true">${t.icon}</span><span class="train-day-label">${t.label==='休息'?'休息 / 自由':t.label+'训练'}</span></button>`).join('');
+  }
   function mealCard(day,meal){const c=choiceFor(day,meal);return `<article class="meal-card"><div class="meal-top"><span class="meal-label">${meal==='l'?'🌤️ 午餐':'🌙 晚餐'}</span><span class="meal-emoji" aria-hidden="true">${escapeHTML(c.item[2])}</span></div><div><div class="meal-title">${escapeHTML(c.item[0])}</div><div class="meal-extra">${escapeHTML(c.item[1])}</div><div class="meal-meta">${escapeHTML(c.item[3]||'今日推荐')} · ${c.item[3]==='自定义'?'我的安排':`${c.index+1} / ${c.options.length} 道可换`}</div></div><div class="modes" role="group" aria-label="${meal==='l'?'午餐':'晚餐'}就餐方式">${Object.entries(MODES).map(([m,label])=>`<button type="button" class="mode ${c.mode===m?'active':''}" aria-pressed="${c.mode===m}" data-mode="${m}" data-meal="${meal}">${label}</button>`).join('')}</div><div class="meal-actions three"><button type="button" class="quiet-btn" data-rotate="${meal}">↻ 换一道</button><button type="button" class="quiet-btn" data-browse="${meal}">▦ 挑菜谱</button><button type="button" class="quiet-btn" data-edit="${meal}">✎ 自定义</button></div></article>`;}
-  function renderMeals(){renderDays();$('mealGrid').innerHTML=mealCard(selectedDay,'l')+mealCard(selectedDay,'d');$('dayStatus').title=DB[selectedDay].tip;}
-  function renderWeek(){ $('weeklyList').innerHTML=DB.map((d,i)=>{const a=choiceFor(i,'l'),b=choiceFor(i,'d');return `<button type="button" class="week-card ${i===jsDay?'current':''}" data-weekday="${i}"><div class="week-top"><span class="week-title">${WEEKDAYS[i]} <span style="font-weight:500;color:#9aab9b;font-size:12px">${dateOfDay(i).getMonth()+1}/${dateOfDay(i).getDate()}</span></span>${i===jsDay?'<span class="week-current">今天</span>':'<span style="font-size:14px;color:#99aa9c">↗</span>'}</div><div class="week-meal"><small>午餐</small><span>${escapeHTML(a.item[0])}</span></div><div class="week-meal"><small>晚餐</small><span>${escapeHTML(b.item[0])}</span></div><div class="week-meal" style="font-size:11px;color:#819283;margin-top:11px"><span>${MODES[a.mode]} · ${MODES[b.mode]}</span></div></button>`;}).join('');}
+  function renderMeals(){renderDays();renderTraining(selectedDay);$('mealGrid').innerHTML=mealCard(selectedDay,'l')+mealCard(selectedDay,'d');$('dayStatus').title=DB[selectedDay].tip;}
+  function renderWeek(){renderTrainingWeek(); $('weeklyList').innerHTML=DB.map((d,i)=>{const a=choiceFor(i,'l'),b=choiceFor(i,'d');return `<button type="button" class="week-card ${i===jsDay?'current':''}" data-weekday="${i}"><div class="week-top"><span class="week-title">${WEEKDAYS[i]} <span style="font-weight:500;color:#9aab9b;font-size:12px">${dateOfDay(i).getMonth()+1}/${dateOfDay(i).getDate()}</span></span><span class="week-workout ${TRAINING[i].type}">${TRAINING[i].icon} ${TRAINING[i].label}</span></div><div class="week-meal"><small>午餐</small><span>${escapeHTML(a.item[0])}</span></div><div class="week-meal"><small>晚餐</small><span>${escapeHTML(b.item[0])}</span></div><div class="week-meal" style="font-size:11px;color:#819283;margin-top:11px"><span>${MODES[a.mode]} · ${MODES[b.mode]}</span></div></button>`;}).join('');}
   function allItems(){const base=GROUPS.flatMap(g=>g.items.map(name=>({id:'b:'+name,name,group:g.key})));return [...base,...(state.customItems||[]).map(x=>({...x,group:'custom'}))];}
   function renderShop(){const extra=state.customItems||[];let html=GROUPS.map(g=>groupHTML(g.title,g.items.map(name=>({id:'b:'+name,name})))).join('');if(extra.length)html+=groupHTML('✨ 自己添加',extra);$('shoppingGroups').innerHTML=html;const items=allItems();let n=items.filter(x=>state.checked[x.id]).length;$('progressBar').style.width=items.length?`${n/items.length*100}%`:'0%';$('progressText').textContent=`${n} / ${items.length} 项已勾选`;}
   function groupHTML(title,items){return `<div class="shop-group"><div class="group-title">${escapeHTML(title)}</div>${items.map(x=>`<label class="check-row"><input type="checkbox" data-check="${escapeHTML(x.id)}" ${state.checked[x.id]?'checked':''}/><span>${escapeHTML(x.name)}</span>${x.id.startsWith('c:')?`<button type="button" title="删除这项" aria-label="删除${escapeHTML(x.name)}" data-remove="${escapeHTML(x.id)}" style="margin-left:auto;border:0;background:none;color:#adb6aa;font-size:18px">×</button>`:''}</label>`).join('')}</div>`;}
   function switchTab(tab){if(!['today','week','library','shop'].includes(tab))return;activeTab=tab;document.querySelectorAll('[data-tab]').forEach(el=>{const active=el.dataset.tab===tab;el.classList.toggle('active',active);if(el.classList.contains('tab'))el.setAttribute('aria-current',active?'page':'false')});document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+tab));if(tab==='today')renderMeals();if(tab==='week')renderWeek();if(tab==='library')renderLibrary();if(tab==='shop')renderShop();window.scrollTo({top:0,behavior:'instant'});}
   function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
   function openEditor(meal){editing={day:selectedDay,meal};const c=choiceFor(selectedDay,meal);$('customMealInput').value=state.choices[keyFor(selectedDay,meal)]?.custom||'';$('editModal').showModal();$('customMealInput').focus();}
-  function weekText(){return DB.map((d,i)=>`${WEEKDAYS[i]}\n午餐：${choiceFor(i,'l').item[0]}（${MODES[choiceFor(i,'l').mode]}）\n晚餐：${choiceFor(i,'d').item[0]}（${MODES[choiceFor(i,'d').mode]}）`).join('\n\n');}
+  function weekText(){return DB.map((d,i)=>`${WEEKDAYS[i]} · ${TRAINING[i].title}\n午餐：${choiceFor(i,'l').item[0]}（${MODES[choiceFor(i,'l').mode]}）\n晚餐：${choiceFor(i,'d').item[0]}（${MODES[choiceFor(i,'d').mode]}）`).join('\n\n');}
   async function copyText(value){try{await navigator.clipboard.writeText(value);showToast('已复制，可以发给自己或家人');}catch(e){const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_e){}ta.remove();showToast(ok?'已复制':'复制失败，请使用浏览器的复制功能');}}
   document.addEventListener('click',e=>{
     const tab=e.target.closest('[data-tab]');if(tab){switchTab(tab.dataset.tab);return;}
